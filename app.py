@@ -23,9 +23,13 @@ print(f"Converted {args.FilePath} to {args.FilePath}.md")
 shutil.copyfile(f'{args.FilePath}.md', f'{args.FilePath}_copie.md')
 
 # Open the file
-with open(f'{args.FilePath}.md', 'r') as file:
+with open(f'{args.FilePath}.md', 'r', encoding="latin-1") as file:
     # Read the file
-    contents = file.read()
+    try:
+        contents = file.read()
+    except Exception as e:
+        print(f"An error occurred: {e}")
+        exit()
 
 # Replace the text
 
