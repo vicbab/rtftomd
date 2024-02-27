@@ -2,5 +2,7 @@
 
 Converts from RTF to MD with [Pandoc](https://github.com/jgm/pandoc), then RegEx cleanup in preparation for use with [Stylo](https://stylo.huma-num.fr).
 
+Specifically made for [Lampadaire](lampadaire.ca). Planned to be made more flexible in the near future.
+
 # How to use it
 ``python app.py path-to-file.rtf``
