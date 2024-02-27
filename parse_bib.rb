@@ -8,6 +8,9 @@ file_copy = File.open("#{ARGV[0]}.txt", "w")
 content = file.read.encode('UTF-8', :invalid => :replace, :undef => :replace, :replace => '')
 content = content.gsub("*", "")
 content = content.gsub(">", "")
+content = content.gsub(/\[\^\d+\]:\s+.*/, "")
+
+puts content
 
 file_copy.write(content)
 file_copy.close
