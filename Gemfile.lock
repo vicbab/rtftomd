@@ -1,16 +1,33 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    activesupport (7.1.3.2)
+      base64
+      bigdecimal
+      concurrent-ruby (~> 1.0, >= 1.0.2)
+      connection_pool (>= 2.2.5)
+      drb
+      i18n (>= 1.6, < 2)
+      minitest (>= 5.1)
+      mutex_m
+      tzinfo (~> 2.0)
     anystyle (1.5.0)
       anystyle-data (~> 1.3)
       bibtex-ruby (~> 6.0)
       namae (~> 1.0)
       wapiti (~> 2.1)
     anystyle-data (1.3.0)
+    base64 (0.2.0)
     bibtex-ruby (6.1.0)
       latex-decode (~> 0.0)
       racc (~> 1.7)
+    bigdecimal (3.1.6)
     builder (3.2.4)
+    concurrent-ruby (1.2.3)
+    connection_pool (2.4.1)
+    domain_name (0.6.20240107)
+    drb (2.2.0)
+      ruby2_keywords
     faraday (2.9.0)
       faraday-net_http (>= 2.0, < 3.2)
     faraday-follow_redirects (0.1.0)
@@ -18,16 +35,34 @@ GEM
     faraday-net_http (3.1.0)
       net-http
     fileutils (1.7.2)
+    http-accept (1.7.0)
+    http-cookie (1.0.5)
+      domain_name (~> 0.5)
+    i18n (1.14.1)
+      concurrent-ruby (~> 1.0)
+    json (2.7.1)
     latex-decode (0.4.0)
+    mime-types (3.5.2)
+      mime-types-data (~> 3.2015)
+    mime-types-data (3.2024.0206)
+    minitest (5.22.2)
     multi_json (1.15.0)
+    mutex_m (0.2.0)
     namae (1.2.0)
       racc (~> 1.7)
     net-http (0.4.1)
       uri
+    netrc (0.11.0)
     open3 (0.2.1)
     optparse (0.4.0)
     racc (1.7.3)
+    rest-client (2.1.0)
+      http-accept (>= 1.7.0, < 2.0)
+      http-cookie (>= 1.0.2, < 2.0)
+      mime-types (>= 1.16, < 4.0)
+      netrc (~> 0.8)
     rexml (3.2.6)
+    ruby2_keywords (0.0.5)
     serrano (1.4)
       faraday (~> 2.2)
       faraday-follow_redirects (~> 0.1.0)
@@ -35,10 +70,16 @@ GEM
       rexml (~> 3.2, >= 3.2.5)
       thor (~> 1.2, >= 1.2.1)
     thor (1.3.1)
+    tzinfo (2.0.6)
+      concurrent-ruby (~> 1.0)
     uri (0.13.0)
     wapiti (2.1.0)
       builder (~> 3.2)
       rexml (~> 3.0)
+    zotero (0.2.1)
+      activesupport (>= 4.2.7)
+      json (>= 1)
+      rest-client (>= 2)
 
 PLATFORMS
   x64-mingw-ucrt
@@ -50,6 +91,7 @@ DEPENDENCIES
   open3
   optparse
   serrano
+  zotero
 
 BUNDLED WITH
    2.4.19

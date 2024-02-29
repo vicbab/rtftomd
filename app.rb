@@ -2,10 +2,12 @@ require 'optparse'
 
 load 'tools/parse_bib.rb'
 load 'tools/convert.rb'
+load 'tools/populate_lib.rb'
 
 def run(options)
-    Converter.convert(options)
-    BibParser.run("#{options[:file]}.md")
+    Populate.initialize()
+    #Converter.convert(options)
+    #BibParser.run("#{options[:file]}.md")
 end
 
 

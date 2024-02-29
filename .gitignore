@@ -2,3 +2,4 @@
 *.rtf
 *.bib
 *.txt
+.env

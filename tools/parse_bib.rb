@@ -31,13 +31,13 @@ module BibParser
 
     for i in bib
       doi = find_doi(i)
+      meta_original = i
       puts "DOI: #{doi}"
       if doi
-        puts "Extracting metadata..."
-        meta_original = i
         begin
-          meta_xref = extract_metadata(doi)
-          puts "META: #{meta_xref}"
+          puts "Extracting metadata..."
+          meta_xref = Serrano.content_negotiation(ids: doi, format: "bibtex")
+          puts meta_xref
           if meta_original.length < meta_xref.length
             new_bib += meta_xref
           else
@@ -48,6 +48,7 @@ module BibParser
           new_bib += "@#{i}"
         end
       else
+        puts "No DOI found"
         new_bib += "@#{i}"
       end
     end
@@ -81,13 +82,7 @@ module BibParser
   end
 
   def extract_metadata(doi)
-    begin
-      metadata = Serrano.content_negotiation(ids: doi, format: "bibtex")
-    rescue => e
-      puts "Error occurred while extracting metadata: #{e.message}"
-      metadata = nil
-    end
-    return metadata
+    return Serrano.content_negotiation(ids: doi, format: "bibtex")
   end
 
   def configure_serrano
