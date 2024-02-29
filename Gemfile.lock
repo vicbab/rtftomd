@@ -1,0 +1,55 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    anystyle (1.5.0)
+      anystyle-data (~> 1.3)
+      bibtex-ruby (~> 6.0)
+      namae (~> 1.0)
+      wapiti (~> 2.1)
+    anystyle-data (1.3.0)
+    bibtex-ruby (6.1.0)
+      latex-decode (~> 0.0)
+      racc (~> 1.7)
+    builder (3.2.4)
+    faraday (2.9.0)
+      faraday-net_http (>= 2.0, < 3.2)
+    faraday-follow_redirects (0.1.0)
+      faraday (>= 2, < 3)
+    faraday-net_http (3.1.0)
+      net-http
+    fileutils (1.7.2)
+    latex-decode (0.4.0)
+    multi_json (1.15.0)
+    namae (1.2.0)
+      racc (~> 1.7)
+    net-http (0.4.1)
+      uri
+    open3 (0.2.1)
+    optparse (0.4.0)
+    racc (1.7.3)
+    rexml (3.2.6)
+    serrano (1.4)
+      faraday (~> 2.2)
+      faraday-follow_redirects (~> 0.1.0)
+      multi_json (~> 1.15)
+      rexml (~> 3.2, >= 3.2.5)
+      thor (~> 1.2, >= 1.2.1)
+    thor (1.3.1)
+    uri (0.13.0)
+    wapiti (2.1.0)
+      builder (~> 3.2)
+      rexml (~> 3.0)
+
+PLATFORMS
+  x64-mingw-ucrt
+
+DEPENDENCIES
+  anystyle
+  bibtex-ruby
+  fileutils
+  open3
+  optparse
+  serrano
+
+BUNDLED WITH
+   2.4.19
