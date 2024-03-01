@@ -16,7 +16,11 @@ Specifically made for [Lampadaire](lampadaire.ca). Planned to be made more flexi
 # How to use it
 
 ``Usage: app.rb [options]``
+
 ``"-f", "--file FILE", "File to parse"``
+
 ``"-b", "--bib FILE", "MD file to parse bibliography"``
+
 ``"-r", "--ref REF", "Reference to search"``
+
 ``"-l", "--lint FILE", "Lint the file"``
