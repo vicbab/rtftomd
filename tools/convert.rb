@@ -8,7 +8,7 @@ module Converter
         stdout, stderr, status = Open3.capture3("pandoc --from=rtf --to=markdown --output=#{options[:file]}.md < #{@file}")
 
         if status.success?
-            
+            lint("#{@file}.md")
         else
             puts "Conversion failed: #{stderr}"
             exit

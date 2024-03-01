@@ -60,7 +60,7 @@ module BibParser
         # meta_xref = Serrano.works(query_container_title: title, query_author: author, sort: 'relevance', order: "asc", format: "bibtex")['message']['items'].first
         # puts "Got metadata: #{meta_xref}"
         # puts "Was: #{meta_original}"
-
+        new_bib += meta_original
         # unless meta_xref.length < meta_original.length
         #   new_bib += meta_xref
         # else
