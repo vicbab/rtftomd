@@ -3,6 +3,10 @@ require 'serrano'
 require 'bibtex'
 
 module BibParser
+  def get_ref(ref)
+    return AnyStyle.parse ref, format: 'bibtex'
+  end
+
   def parse(fileToParse)
     file = File.open(fileToParse, "r")
 
@@ -31,7 +35,9 @@ module BibParser
 
     for i in bib
       doi = find_doi(i)
-      meta_original = i
+      title = find_title(i)
+      author = find_author(i)
+      meta_original = i.force_encoding('UTF-8')
       puts "DOI: #{doi}"
       if doi
         begin
@@ -49,7 +55,18 @@ module BibParser
         end
       else
         puts "No DOI found"
-        new_bib += "@#{i}"
+        puts "Trying to fetch metadata..."
+        #todo
+        # meta_xref = Serrano.works(query_container_title: title, query_author: author, sort: 'relevance', order: "asc", format: "bibtex")['message']['items'].first
+        # puts "Got metadata: #{meta_xref}"
+        # puts "Was: #{meta_original}"
+
+        # unless meta_xref.length < meta_original.length
+        #   new_bib += meta_xref
+        # else
+        #   new_bib += meta_original
+        # end
+        puts "skipping"
       end
     end
 
@@ -81,7 +98,27 @@ module BibParser
     return doi
   end
 
-  def extract_metadata(doi)
+  def find_title(entry)
+    title = entry.match(/title = \{(.+?)\}/)
+    if title
+      title = title[1]
+    else
+      title = nil
+    end
+    return title
+  end
+
+  def find_author(entry)
+    author = entry.match(/author = \{(.+?)\}/)
+    if author
+      author = author[1]
+    else
+      author = nil
+    end
+    return author
+  end
+
+  def extract_from_doi(doi)
     return Serrano.content_negotiation(ids: doi, format: "bibtex")
   end
 
@@ -93,8 +130,11 @@ module BibParser
 
   def run(file)
     configure_serrano
+    # title = "force de loi"
+    # author = "jacques derrida"
+    # puts Serrano.works(query: ".bibliographic=#{title}&query.author=#{author}", format: "bibtex")
     bib = parse(file)
   end
 
-  module_function :parse, :format_keys, :find_doi, :extract_metadata, :configure_serrano, :run
+  module_function :parse, :format_keys, :find_doi, :extract_from_doi, :configure_serrano, :run, :find_title, :find_author, :get_ref
 end
