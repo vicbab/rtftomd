@@ -4,8 +4,52 @@ require 'bibtex'
 
 module BibParser
   def get_ref(ref)
-    return AnyStyle.parse ref, format: 'bibtex'
+    configure_serrano
+    ref = AnyStyle.parse ref, format: 'bibtex'
+    return check(ref.to_s)
+
   end
+
+def check(i)
+  new_bib = ""
+  doi = find_doi(i)
+  title = find_title(i)
+  author = find_author(i)
+  meta_original = i.force_encoding('UTF-8')
+  puts "DOI: #{doi}"
+  if doi
+    begin
+      puts "Extracting metadata..."
+      meta_xref = Serrano.content_negotiation(ids: doi, format: "bibtex")
+      puts meta_xref
+      if meta_original.length < meta_xref.length
+        new_bib += meta_xref
+      else
+        new_bib += "@#{meta_original}"
+      end
+    rescue => e
+      puts "Error occurred while extracting metadata: #{e.message}"
+      new_bib += "@#{i}"
+    end
+  else
+    puts "No DOI found"
+    puts "Trying to fetch metadata..."
+    #todo
+    meta_xref = Serrano.works(query_b: title, query_author: author, sort: 'relevance', order: "asc", format: "bibtex")['message']['items'].first
+    puts "Got metadata: #{meta_xref}"
+    puts "Was: #{meta_original}"
+    # new_bib += meta_original
+    unless meta_xref.length < meta_original.length
+      new_bib += meta_xref
+    else
+      puts "skipping"
+
+      new_bib += meta_original
+    end
+  end
+  return new_bib
+end
+
 
   def parse(fileToParse)
     file = File.open(fileToParse, "r")
@@ -22,7 +66,7 @@ module BibParser
     file_copy.close
     file.close
 
-      
+
     refs = AnyStyle.find file_copy.path
 
     bib = AnyStyle.parse refs.to_s.split("\","), format: 'bibtex'
@@ -57,15 +101,15 @@ module BibParser
         puts "No DOI found"
         puts "Trying to fetch metadata..."
         #todo
-        # meta_xref = Serrano.works(query_container_title: title, query_author: author, sort: 'relevance', order: "asc", format: "bibtex")['message']['items'].first
-        # puts "Got metadata: #{meta_xref}"
-        # puts "Was: #{meta_original}"
-        new_bib += meta_original
-        # unless meta_xref.length < meta_original.length
-        #   new_bib += meta_xref
-        # else
-        #   new_bib += meta_original
-        # end
+        meta_xref = Serrano.works(query_container_title: title, query_author: author, sort: 'relevance', order: "asc", format: "bibtex")['message']['items'].first
+        puts "Got metadata: #{meta_xref}"
+        puts "Was: #{meta_original}"
+        # new_bib += meta_original
+        unless meta_xref.length < meta_original.length
+          new_bib += meta_xref
+        else
+          new_bib += meta_original
+        end
         puts "skipping"
       end
     end
@@ -94,7 +138,7 @@ module BibParser
       doi = doi[1]
     else
       doi = nil
-    end 
+    end
     return doi
   end
 
@@ -136,5 +180,5 @@ module BibParser
     bib = parse(file)
   end
 
-  module_function :parse, :format_keys, :find_doi, :extract_from_doi, :configure_serrano, :run, :find_title, :find_author, :get_ref
+  module_function :parse, :check, :format_keys, :find_doi, :extract_from_doi, :configure_serrano, :run, :find_title, :find_author, :get_ref
 end
