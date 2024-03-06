@@ -5,12 +5,13 @@ require 'fileutils'
 
 load 'tools/parse_bib.rb'
 load 'tools/convert.rb'
-#load 'tools/populate_lib.rb'
+load 'tools/populate_lib.rb'
 
 def run(options)
     #Populate.initialize()
     Converter.convert(options)
     BibParser.run("#{options[:file]}.md")
+    ZoteroCourier.populate_lib("#{options[:file]}.md.bib")
 end
 
 def get_bib(file)
