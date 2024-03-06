@@ -7,7 +7,7 @@ RTFTOMD is a pre-CMS software used in conjunction with [Stylo](https://stylo.hum
 1. Converts from RTF to MD with [Pandoc](https://github.com/jgm/pandoc)
 2. Lints & formats the manuscript in preparation for use with [Stylo](https://stylo.huma-num.fr).
 3. Parses the bibliography with [Anystyle](https://github.com/inukshuk/anystyle) and [Serrano](https://github.com/sckott/serrano).
-4. (TODO) Automatically adds the bibliography to a new Zotero subcollection.
+4. Automatically adds the bibliography to a Zotero subcollection. (TODO: create a new subcollection for the article, properly formatted)
 5. (TODO) Replaces inline/footnote citations with citation keys in the manuscript.
 6. (TODO) Automatically adds the manuscript to [Stylo](https://github.com/EcrituresNumeriques/stylo)
 
