@@ -9,9 +9,15 @@ load 'tools/populate_lib.rb'
 
 def run(options)
     #Populate.initialize()
-    Converter.convert(options)
-    BibParser.run("#{options[:file]}.md")
-    ZoteroCourier.populate_lib("#{options[:file]}.md.bib")
+    if options[:file].include? ".rtf"
+        Converter.convert(options)
+        extension = ".md"
+    end
+    if options[:file].include? ".md"
+        extension = ""
+    end
+    BibParser.run("#{options[:file]}#{extension}")
+    ZoteroCourier.populate_lib("#{options[:file]}#{extension}.bib")
 end
 
 def get_bib(file)
