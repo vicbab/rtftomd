@@ -40,37 +40,116 @@ def populate_json(info)
   #     "relations" : {}
   # }'
 
-  data = ZoteroApi.new(ENV['ZOTERO_USER_ID'], ENV['ZOTERO_API_KEY'], ENV['ZOTERO_GROUP_ID']).get_template('journalArticle').to_json
-
-  data_hash = JSON.parse(data)
+  
   info_hash = JSON.parse(info)
   puts info_hash.to_json
+  itemType = ""
   # data_hash["title"] = title
   # data_hash["creators"][0]["firstName"] = author.first
   # data_hash["creators"][0]["lastName"] = author.last
-  new_hash = {
-    "itemType": "journalArticle",
-    "title": info_hash['title'],
-    "creators": [
-        {
-            "creatorType": "author",
-            "firstName": info_hash['author'][0]['given'],
-            "lastName": info_hash['author'][0]['family']
-        }
-    ],
-    "publicationTitle": info_hash['container-title'],
-    "volume": info_hash['volume'],
-    "issue": info_hash['issue'],
-    "pages": info_hash['page'],
-    "date": info_hash['issued']['date-parts'][0].first.to_s, #TODO
-    "DOI": info_hash['DOI'],
-    "ISSN": info_hash['issn'],
-    "url": info_hash['URL'],
-    "tags": [],
-    "collections": ["74FCTFRR"],
-    "relations": {}
+  if info_hash['type'] == "article-journal"
+    itemType = "journalArticle"
+    new_hash = {
+      "itemType": "journalArticle",
+      "title": info_hash['title'],
+      "creators": [
+          {
+              "creatorType": "author",
+              "firstName": info_hash['author'][0]['given'],
+              "lastName": info_hash['author'][0]['family']
+          }
+      ],
+      "publicationTitle": info_hash['container-title'],
+      "volume": info_hash['volume'],
+      "issue": info_hash['issue'],
+      "pages": info_hash['page'],
+      "date": info_hash['issued']['date-parts'][0].first.to_s, #TODO
+      "DOI": info_hash['DOI'],
+      "ISSN": info_hash['issn'],
+      "url": info_hash['URL'],
+      "tags": [],
+      "collections": ["74FCTFRR"],
+      "relations": {}
+    }
+  elif info_hash['type'] == "book"
+    itemType = "book"
+    new_hash = {
+      "itemType": "book",
+      "title": info_hash['title'],
+      "creators": [
+          {
+              "creatorType": "author",
+              "firstName": info_hash['author'][0]['given'],
+              "lastName": info_hash['author'][0]['family']
+          }
+      ],
+      "abstractNote": "",
+      "series": "",
+      "seriesNumber": "",
+      "volume": "",
+      "numberOfVolumes": "",
+      "edition": "",
+      "place": info_hash['publisher-place'],
+      "publisher": info_hash['publisher'],
+      "date": info_hash['issued']['date-parts'][0].first.to_s,
+      "numPages": "",
+      "language": "",
+      "ISBN":info_hash['ISBN'],
+      "shortTitle": "",
+      "url": info_hash['URL'],
+      "accessDate": "",
+      "archive": "",
+      "archiveLocation": "",
+      "libraryCatalog": "",
+      "callNumber": "",
+      "rights": "",
+      "extra": "",
+      "tags": [],
+      "collections": [],
+      "relations": {}
   }
+  else
+    itemType = "book"
+    new_hash = {
+      "itemType": "book",
+      "title": info_hash['title'],
+      "creators": [
+          {
+              "creatorType": "author",
+              "firstName": info_hash['author'][0]['given'],
+              "lastName": info_hash['author'][0]['family']
+          }
+      ],
+      "abstractNote": "",
+      "series": "",
+      "seriesNumber": "",
+      "volume": "",
+      "numberOfVolumes": "",
+      "edition": "",
+      "place": info_hash['publisher-place'],
+      "publisher": info_hash['publisher'],
+      "date": info_hash['issued']['date-parts'][0].first.to_s,
+      "numPages": "",
+      "language": "",
+      "ISBN":info_hash['ISBN'],
+      "shortTitle": "",
+      "url": info_hash['URL'],
+      "accessDate": "",
+      "archive": "",
+      "archiveLocation": "",
+      "libraryCatalog": "",
+      "callNumber": "",
+      "rights": "",
+      "extra": "",
+      "tags": [],
+      "collections": [],
+      "relations": {}
+    }
+  end
 
+  data = ZoteroApi.new(ENV['ZOTERO_USER_ID'], ENV['ZOTERO_API_KEY'], ENV['ZOTERO_GROUP_ID']).get_template(itemType).to_json
+  data_hash = JSON.parse(data)
+  puts data_hash.to_json
   #puts info_hash.select { |k| data_hash.keys.include? k }.to_json
   #data_hash.merge info_hash.select { |k| data_hash.keys.include? k }
   puts "new_hash: " + new_hash.to_json + "\n"
