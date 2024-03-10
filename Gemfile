@@ -10,3 +10,6 @@ gem "optparse"
 gem "open3"
 gem "fileutils"
 gem "zotero"
+gem "graphql", "~> 2.2"
+
+gem "graphql-client", "~> 0.20.0"

@@ -35,6 +35,11 @@ GEM
     faraday-net_http (3.1.0)
       net-http
     fileutils (1.7.2)
+    graphql (2.2.12)
+      base64
+    graphql-client (0.20.0)
+      activesupport (>= 3.0)
+      graphql (>= 1.13.0)
     http-accept (1.7.0)
     http-cookie (1.0.5)
       domain_name (~> 0.5)
@@ -89,6 +94,8 @@ DEPENDENCIES
   anystyle
   bibtex-ruby
   fileutils
+  graphql (~> 2.2)
+  graphql-client (~> 0.20.0)
   open3
   optparse
   serrano
