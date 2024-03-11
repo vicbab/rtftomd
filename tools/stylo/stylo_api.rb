@@ -90,69 +90,43 @@ module Articles
       }
     GRAPHQL
 
-    title = "default"
-
-
-
     ContentFragment = StyloApi::Client.parse <<-'GRAPHQL'
-      fragment content on Article {
+      fragment ContentFragment on Article {
         updateWorkingVersion(content: $content) {
           workingVersion {
+            bib
             md
+            yaml (options: { strip_markdown: true })
           }
         }
       }
     GRAPHQL
 
-    # Ne pas oublier: variable zoteroLink possible! createArticle(title: "string", user: "_____", tags: ["_____"])
     Create = StyloApi::Client.parse <<-'GRAPHQL'
-    mutation($title: String!) {
-        createArticle(
-            title: $title,
-            user: "5f3e3e3e3e3e3e3e3e3e3e3e"
-        ) {
-            title
-            _id
-
-            workingVersion {
-              bib
-              md
-              yaml
-
-            }
-
-            ...ContentFragment
+      mutation($title: String!, $content: WorkingVersionInput!) {
+        createArticle(title: $title, user: "RTFTOMD") {
+          title
+          _id
+          workingVersion {
+            bib
+            md
+            yaml
+          }
+          ...Articles::ContentFragment::ContentFragment
         }
-
-    }
+      }
     GRAPHQL
-
-    # Populate = StyloApi::Client.parse <<-'GRAPHQL'
-    # mutation updateWorkingVersion(content: {}) {
-    #   _id
-    #   title
-    #   setZoteroLink(zotero: "string")
-    #   updateWorkingVersion(content: {}) {
-    #     _id
-    #     title
-    #     zoteroLink
-    #     workingVersion
-    #   }
-    # }
-    # GRAPHQL
 end
 
-def create_article(title, md = "Testing")
-    StyloApi::Client.query(Articles::Create, variables: { title: title})
-end
 
-articlesdata = StyloApi::Client.query(Articles::GetArticles).data.articles
 
-results = StyloApi::Client.query(Articles::GetArticle, variables: { article: "65457bd72b40d5001250a550" }).data.article.working_version.md
+#articlesdata = StyloApi::Client.query(Articles::GetArticles).data.articles
 
-ContentFragment = Articles::ContentFragment(variables: {content: "{md: \"Test-API\"}"})
+#results = StyloApi::Client.query(Articles::GetArticle, variables: { article: "65457bd72b40d5001250a550" }).data.article.working_version.md
 
-puts StyloApi::Client.query(Articles::Create, variables: { title: "Testing-10"})
+#ContentFragment = Articles::ContentFragment(variables: {content: "{md: \"Test-API\"}"})
+
+# puts create_article("test-API-RTF", "Test-API:RTF-to-MD", "# Test \n test2", "")
 
 # for article in articlesdata
 #   # puts article.working_version.md

@@ -6,18 +6,32 @@ require 'fileutils'
 load 'tools/parse_bib.rb'
 load 'tools/convert.rb'
 load 'tools/populate_lib.rb'
+load 'tools/populate_stylo.rb'
 
 def run(options)
     #Populate.initialize()
     if options[:file].include? ".rtf"
+        puts "Detected RTF file!"
+        puts "Converting to MD..."
         Converter.convert(options)
         extension = ".md"
     end
     if options[:file].include? ".md"
+        puts "Detected MD file!"
+        puts "Linting..." #TODO: Add linting
         extension = ""
     end
+
+    puts "Parsing bibliography..."
     BibParser.run("#{options[:file]}#{extension}")
-    ZoteroCourier.populate_lib("#{options[:file]}#{extension}.bib")
+
+    puts "Populating Zotero library..."
+    #ZoteroCourier.populate_lib("#{options[:file]}#{extension}.bib")
+
+    puts "Populating Stylo..."
+    StyloCourier.populate("#{options[:file]}#{extension}")
+    
+    puts "Complete!"
 end
 
 def get_bib(file)
@@ -30,6 +44,7 @@ OptionParser.new do |opts|
 
     opts.on("-f", "--file FILE", "File to parse") do |file|
         options[:file] = file
+        puts "RUNNING RTFTOMD: FILE PARSER"
         run(options)
     end
     opts.on("-b", "--bib FILE", "MD file to parse bibliography") do |file|
