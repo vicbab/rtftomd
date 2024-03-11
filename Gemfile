@@ -13,3 +13,5 @@ gem "zotero"
 gem "graphql", "~> 2.2"
 
 gem "graphql-client", "~> 0.20.0"
+
+gem "dotenv", "~> 3.1"
