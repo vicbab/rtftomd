@@ -1,0 +1,11 @@
+query listArticles {
+    user {
+     _id
+     email
+     
+     articles {
+      _id
+      title
+      }
+   }
+}

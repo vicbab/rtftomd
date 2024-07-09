@@ -1,0 +1,362 @@
+mutation {
+  createArticle(title: "string", user: "_____", tags: ["_____"]) {
+    _id
+    title
+    zoteroLink
+    owner {
+      _id
+      displayName
+      username
+      authType
+      email
+      firstName
+      lastName
+      institution
+      tags(limit: 1, page: 1)
+      permissions
+      acquintances(limit: 1, page: 1)
+      articles(limit: 1, page: 1)
+      workspaces
+      admin
+      yaml
+      zoteroToken
+      createdAt
+      updatedAt
+      apiToken
+      addContact(userId: "_____")
+      removeContact(userId: "_____")
+      stats
+    }
+    contributors {
+      user
+      roles
+    }
+    workingVersion {
+      bib
+      bibPreview
+      md
+      yaml(options: {})
+    }
+    versions(limit: 1, page: 1) {
+      _id
+      name
+      version
+      revision
+      md
+      sommaire
+      type
+      yaml(options: {})
+      bib
+      bibPreview
+      message
+      article
+      owner
+      createdAt
+      updatedAt
+      rename(name: "string")
+    }
+    tags(limit: 1, page: 1) {
+      _id
+      name
+      owner
+      description
+      color
+      articles
+      createdAt
+      updatedAt
+    }
+    preview {
+      stylesheet
+      template
+    }
+    collaborativeSession {
+      id
+      creator
+      createdAt
+    }
+    soloSession {
+      id
+      creator
+      creatorUsername
+      createdAt
+    }
+    createdAt
+    updatedAt
+    addTags(tags: ["_____"]) {
+      _id
+      name
+      owner
+      description
+      color
+      articles
+      createdAt
+      updatedAt
+    }
+    delete(dryRun: true)
+    removeTags(tags: ["_____"]) {
+      _id
+      name
+      owner
+      description
+      color
+      articles
+      createdAt
+      updatedAt
+    }
+    rename(title: "string")
+    setPreviewSettings(settings: {}) {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+    setZoteroLink(zotero: "string")
+    updateWorkingVersion(content: {}) {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+    workspaces {
+      _id
+      name
+      description
+      color
+      bibliographyStyle
+      members
+      articles
+      corpus
+      creator
+      createdAt
+      updatedAt
+      article(articleId: "_____")
+      member(userId: "_____")
+      stats
+      leave
+      inviteMember(userId: "_____", role: "string")
+      addArticle(articleId: "_____")
+    }
+    addContributor(userId: "_____") {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+    removeContributor(userId: "_____") {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+    createVersion(articleVersionInput: {}) {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+    startCollaborativeSession {
+      id
+      creator
+      createdAt
+    }
+    startSoloSession {
+      id
+      creator
+      creatorUsername
+      createdAt
+    }
+    takeOverSoloSession {
+      id
+      creator
+      creatorUsername
+      createdAt
+    }
+    stopCollaborativeSession {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+    stopSoloSession {
+      _id
+      title
+      zoteroLink
+      owner
+      contributors
+      workingVersion
+      versions(limit: 1, page: 1)
+      tags(limit: 1, page: 1)
+      preview
+      collaborativeSession
+      soloSession
+      createdAt
+      updatedAt
+      addTags(tags: ["_____"])
+      delete(dryRun: true)
+      removeTags(tags: ["_____"])
+      rename(title: "string")
+      setPreviewSettings(settings: {})
+      setZoteroLink(zotero: "string")
+      updateWorkingVersion(content: {})
+      workspaces
+      addContributor(userId: "_____")
+      removeContributor(userId: "_____")
+      createVersion(articleVersionInput: {})
+      startCollaborativeSession
+      startSoloSession
+      takeOverSoloSession
+      stopCollaborativeSession
+      stopSoloSession
+    }
+  }
+}
