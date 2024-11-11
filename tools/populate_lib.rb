@@ -10,6 +10,7 @@ load 'tools/zotero/zotero_api.rb'
 
 module ZoteroCourier
   def populate_lib(file)
+    # create_collection(num, id)
     add_items(file)
   end
 
@@ -159,6 +160,8 @@ def populate_json(info)
 
   return [new_hash]
 end
+
+
 
 def add_items(file) 
     unless ENV['ZOTERO_USER_ID'] && ENV['ZOTERO_API_KEY']

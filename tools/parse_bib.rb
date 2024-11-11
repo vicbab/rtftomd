@@ -11,16 +11,25 @@ module BibParser
   end
 
   def fetch_metadata(entry)
+    puts "ENTRY:\n#{entry}"
+    
     res = ""
 
+    type = find_type(entry)
     doi = find_doi(entry)
     title = find_title(entry)
     author = find_author(entry)
     year = find_year(entry)
     publisher = find_publisher(entry)
-    key = find_key(entry)
+    key = format_key(entry)
 
     meta_original = entry.force_encoding('UTF-8')
+    
+    puts "Author: #{author}\nTitle: #{title}\nYear: #{year}"
+
+    # if key # FOR TESTING ONLY' must be in COMMENT in PRODUCTION
+    #   return meta_original
+    # end
 
     puts entry
     puts meta_original.length
@@ -30,8 +39,10 @@ module BibParser
       begin
         puts "Extracting metadata..."
         meta_xref = Serrano.content_negotiation(ids: doi, format: "bibtex")
-        if meta_original.length < meta_xref.length
-          res = meta_xref
+        if ! meta_xref.nil?
+          if meta_original.length < meta_xref.length
+            res = meta_xref
+          end
         else
           res = meta_original
         end
@@ -42,24 +53,39 @@ module BibParser
     elsif entry.start_with?("book") || entry.start_with?("inbook") || entry.start_with?("incollection") || entry.start_with?("collection") || entry.start_with?("proceedings") || entry.start_with?("inproceedings") || entry.start_with?("manual") || entry.start_with?(" @phdthesis") || entry.start_with?("mastersthesis") || entry.start_with?("techreport") || entry.start_with?("unpublished") || entry.start_with?("misc")
       puts "Processing as book..."
       puts "Trying to fetch Google Books metadata..."
-      book = GoogleBooks.search("#{title}, #{author}, #{publisher}, #{year}").first
-      meta_gbooks = "book{#{key},\n  title = {#{book.title}},\n  author = {#{book.authors}},\n  publisher = {#{book.publisher}},\n  year = {#{book.published_date}},\n  doi = {#{book.isbn}},\n  url = {#{book.info_link}}\n}"
-      if meta_original.length < meta_gbooks.length
-        res = meta_gbooks
-      else
+      begin
+        book = GoogleBooks.search("#{title}, #{author}, #{publisher}, #{year}").first
+        meta_gbooks = "book{#{key},\n  title = {#{book.title}},\n  author = {#{book.authors}},\n  publisher = {#{book.publisher}},\n  year = {#{book.published_date}},\n  doi = {#{book.isbn}},\n  url = {#{book.info_link}}\n}"
+        if meta_original.length < meta_gbooks.length
+          res = meta_gbooks
+        else
+          res = meta_original
+        end
+      rescue => exception
         res = meta_original
+      else
       end
+      
     else
       puts "No DOI found"
       puts "Trying to fetch Crossref metadata..."
-      found_doi = Serrano.works(query: title, query_author: author, sort: 'relevance', order: "desc", format: 'bibtex')['message']['items'].first["DOI"]
-      meta_xref = Serrano.content_negotiation(ids: found_doi, format: "bibtex")
-      if meta_original.length < meta_xref.length
-        res = meta_xref
-      else
-        res = meta_original
+      begin
+        found_doi = Serrano.works(query: title, query_author: author, sort: 'relevance', order: "desc", format: 'bibtex')['message']['items'].first["DOI"]
+        meta_xref = Serrano.content_negotiation(ids: found_doi, format: "bibtex")
+        if meta_original.length < meta_xref.length
+          res = meta_xref
+        else
+          res = meta_original
+        end
+      rescue => exception
+        res = meta_original     
       end
     end
+
+    res = "@#{res}"
+    res = res.gsub(/@(.+?)\{(.+?),/, "@#{type}{#{key},")
+    puts "RES = #{res}"
+
     return res
   end
 
@@ -96,10 +122,10 @@ module BibParser
         res = fetch_metadata(i)
         new_bib += res.force_encoding('UTF-8')
         File.write("#{fileToParse}_original.bib", " @"+i+"\n", File.size("#{fileToParse}_original.bib"), mode: "a")
-        if res.start_with?(" @")
+        if res.start_with?(" @" || "@")
           File.write("#{fileToParse}.bib", res+"\n", File.size("#{fileToParse}.bib"), mode: "a")
         else
-          File.write("#{fileToParse}.bib", " @"+res+"\n", File.size("#{fileToParse}.bib"), mode: "a")
+          File.write("#{fileToParse}.bib", res+"\n", File.size("#{fileToParse}.bib"), mode: "a")
         end
       end
     end
@@ -107,12 +133,36 @@ module BibParser
     return new_bib
   end
 
-  def format_keys(entry)
-    #TODO
+  def find_type(entry)
+    entry = "@#{entry}"
+    type = entry.match(/@(.+?)\{(.+?),/)
+    if type
+      type = type[1]
+    else
+      type = "document"
+    end
+    return type
+  end
+
+  def format_key(entry)
+    author = find_author(entry).match(/([A-Z])\w+/)
+    title = find_title(entry).match(/([A-Z])\w+/)
+    year = find_year(entry)
+
+    # puts "Got: #{author}_#{title}_#{year}".downcase
+
+    key = "#{author}_#{title}_#{year}".downcase
+
+    # expected = find_key(entry)
+    # puts "Expected: #{expected}"
+
+    # puts expected == key
+
+    return key
   end
 
   def find_key(entry)
-    key = entry.match(/@(.+?)\{(.+?),/)
+    key = entry.match(/@?(.+?)\{(.+?),/)
     if key
       key = key[2]
     else
@@ -146,7 +196,12 @@ module BibParser
     if author
       author = author[1]
     else
-      author = ""
+      author = entry.match(/editor = \{(.+?)\}/)
+      if author
+        author = author[1]
+      else
+        author = "noauthor"
+      end
     end
     return author
   end
@@ -154,9 +209,15 @@ module BibParser
   def find_year(entry)
     year = entry.match(/year = \{(.+?)\}/)
     if year
-      year = year[1]
+        year = year[1]
     else
-      year = ""
+        year = entry.match(/date = \{(.+?)\}/)
+        if ! year
+          year = "nodate"
+        else
+          year = year[1]
+          year = year.match(/([0-9]\d+)/)
+        end
     end
     return year
   end
@@ -189,5 +250,5 @@ module BibParser
     bib = parse(file)
   end
 
-  module_function :parse, :fetch_metadata, :format_keys, :find_doi, :extract_from_doi, :configure_serrano, :run, :find_title, :find_author, :get_ref, :find_year, :find_publisher, :find_key
+  module_function :parse, :fetch_metadata, :format_key, :find_doi, :extract_from_doi, :configure_serrano, :run, :find_title, :find_author, :get_ref, :find_year, :find_publisher, :find_key, :find_type
 end

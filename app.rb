@@ -19,17 +19,30 @@ def run(options)
     if options[:file].include? ".md"
         puts "Detected MD file!"
         puts "Linting..." #TODO: Add linting
+        @file = options[:file]
+        Converter.lint("#{@file}")
         extension = ""
     end
 
-    puts "Parsing bibliography..."
-    BibParser.run("#{options[:file]}#{extension}")
+    if ! options[:skipbib]
+        puts "Parsing bibliography..."
+        BibParser.run("#{options[:file]}#{extension}")
+    end
 
-    puts "Populating Zotero library..."
+    #puts "Populating Zotero library..."
     #ZoteroCourier.populate_lib("#{options[:file]}#{extension}.bib")
 
-    puts "Populating Stylo..."
-    StyloCourier.populate("#{options[:file]}#{extension}")
+    puts "Received ID : #{options[:id]}"
+
+    if options[:id] != ""
+        id = options[:id]
+        puts "Populating Stylo with ID = #{options[:id]}"
+        StyloCourier.populate("#{options[:file]}#{extension}", "#{options[:id]}")
+    else
+        puts "Populating Stylo without ID..."
+        StyloCourier.populate("#{options[:file]}#{extension}", nil)
+    end
+    
     
     puts "Complete!"
 end
@@ -42,10 +55,17 @@ options = {}
 OptionParser.new do |opts|
     opts.banner = "Usage: app.rb [options]"
 
+    opts.on("-i", "--id ID", String, "Include article ID") do |id|
+        options[:id] = id
+    end
+    
+    opts.on("-s", "--skip-bib [FLAG]", "Skip bibliography") do |s|
+        options[:skipbib] = s.nil? ? false : s
+    end
+
     opts.on("-f", "--file FILE", "File to parse") do |file|
         options[:file] = file
         puts "RUNNING RTFTOMD: FILE PARSER"
-        run(options)
     end
     opts.on("-b", "--bib FILE", "MD file to parse bibliography") do |file|
         options[:file] = file
@@ -60,11 +80,18 @@ OptionParser.new do |opts|
         Converter.lint(options[:file])
         puts "Linting complete"
     end
+
+    opts.on("-h", "--help", "Prints this help") do
+        puts opts
+        exit
+      end
 end.parse!
 
 if options[:file] == nil
     puts "Error: No file specified"
     exit
+else
+    run(options)
 end
 
 # title = "force"

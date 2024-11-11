@@ -52,6 +52,7 @@ module Converter
     end
 
     def format(contents)
+        contents = contents.gsub("\\_", "")
         contents = contents.gsub("\\", "")
         contents = contents.gsub("[^", "&sticker&")
         contents = contents.gsub("^", "")
