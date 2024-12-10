@@ -59,19 +59,27 @@ module Converter
         contents = contents.gsub("&sticker&", " [^")
         contents = contents.gsub("’", "\'")
         contents = contents.gsub("[...", "[...]")
-        contents = contents.gsub(/. \* /, '*')
+        # contents = contents.gsub(/. \* /, '*')
         # contents = contents.gsub("« ", "«&nbsp;")
         # contents = contents.gsub(" »", "&nbsp;»")
-        contents = contents.gsub("« ", "«&nbsp;")
-        contents = contents.gsub(" »", "&nbsp;»")
-        contents = contents.gsub(" ", "&nbsp;")
+        
 
         # Merging broken lines
         contents = contents.gsub(/(?<!\n)\n(?!\n)/, ' ')
 
-        contents = contents.gsub(/\n\*(.*?)\*\n/) do |match|
-            "\n## #{$1}\n"
+
+        # Titles
+        contents = contents.gsub(/\*\*(.+)\*\*\s+/i) do |match|
+        "\n## #{$1}\n\n"
         end
+
+        contents = contents.gsub("« ", "«&nbsp;")
+        contents = contents.gsub(" »", "&nbsp;»")
+        contents = contents.gsub(" ", "&nbsp;")
+
+        # contents = contents.gsub(/\n\*(.*?)\*\n/) do |match|
+        #     "\n## #{$1}\n"
+        # end
 
         # Formatting quotes TODO
         #contents = contents.gsub(/«(.*?)»/) { |match| replace_wrong_quotes(match) }

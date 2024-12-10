@@ -13,6 +13,10 @@ module BibParser
   def fetch_metadata(entry)
     puts "ENTRY:\n#{entry}"
     
+    lookup = true
+
+    entry = entry.gsub("&nbsp;", "")
+
     res = ""
 
     type = find_type(entry)
@@ -35,51 +39,55 @@ module BibParser
     puts meta_original.length
     puts "DOI: #{doi}"
 
-    if doi
-      begin
-        puts "Extracting metadata..."
-        meta_xref = Serrano.content_negotiation(ids: doi, format: "bibtex")
-        if ! meta_xref.nil?
+    if lookup
+      if doi
+        begin
+          puts "Extracting metadata..."
+          meta_xref = Serrano.content_negotiation(ids: doi, format: "bibtex")
+          if ! meta_xref.nil?
+            if meta_original.length < meta_xref.length
+              res = meta_xref
+            end
+          else
+            res = meta_original
+          end
+        rescue => e
+          puts "Error occurred while extracting metadata: #{e.message}"
+          res = entry
+        end
+      elsif entry.start_with?("book") || entry.start_with?("inbook") || entry.start_with?("incollection") || entry.start_with?("collection") || entry.start_with?("proceedings") || entry.start_with?("inproceedings") || entry.start_with?("manual") || entry.start_with?(" @phdthesis") || entry.start_with?("mastersthesis") || entry.start_with?("techreport") || entry.start_with?("unpublished") || entry.start_with?("misc")
+        puts "Processing as book..."
+        puts "Trying to fetch Google Books metadata..."
+        begin
+          book = GoogleBooks.search("#{title}, #{author}, #{publisher}, #{year}").first
+          meta_gbooks = "book{#{key},\n  title = {#{book.title}},\n  author = {#{book.authors}},\n  publisher = {#{book.publisher}},\n  year = {#{book.published_date}},\n  doi = {#{book.isbn}},\n  url = {#{book.info_link}}\n}"
+          if meta_original.length < meta_gbooks.length
+            res = meta_gbooks
+          else
+            res = meta_original
+          end
+        rescue => exception
+          res = meta_original
+        else
+        end
+        
+      else
+        puts "No DOI found"
+        puts "Trying to fetch Crossref metadata..."
+        begin
+          found_doi = Serrano.works(query: title, query_author: author, sort: 'relevance', order: "desc", format: 'bibtex')['message']['items'].first["DOI"]
+          meta_xref = Serrano.content_negotiation(ids: found_doi, format: "bibtex")
           if meta_original.length < meta_xref.length
             res = meta_xref
+          else
+            res = meta_original
           end
-        else
-          res = meta_original
+        rescue => exception
+          res = meta_original     
         end
-      rescue => e
-        puts "Error occurred while extracting metadata: #{e.message}"
-        res = entry
       end
-    elsif entry.start_with?("book") || entry.start_with?("inbook") || entry.start_with?("incollection") || entry.start_with?("collection") || entry.start_with?("proceedings") || entry.start_with?("inproceedings") || entry.start_with?("manual") || entry.start_with?(" @phdthesis") || entry.start_with?("mastersthesis") || entry.start_with?("techreport") || entry.start_with?("unpublished") || entry.start_with?("misc")
-      puts "Processing as book..."
-      puts "Trying to fetch Google Books metadata..."
-      begin
-        book = GoogleBooks.search("#{title}, #{author}, #{publisher}, #{year}").first
-        meta_gbooks = "book{#{key},\n  title = {#{book.title}},\n  author = {#{book.authors}},\n  publisher = {#{book.publisher}},\n  year = {#{book.published_date}},\n  doi = {#{book.isbn}},\n  url = {#{book.info_link}}\n}"
-        if meta_original.length < meta_gbooks.length
-          res = meta_gbooks
-        else
-          res = meta_original
-        end
-      rescue => exception
-        res = meta_original
-      else
-      end
-      
     else
-      puts "No DOI found"
-      puts "Trying to fetch Crossref metadata..."
-      begin
-        found_doi = Serrano.works(query: title, query_author: author, sort: 'relevance', order: "desc", format: 'bibtex')['message']['items'].first["DOI"]
-        meta_xref = Serrano.content_negotiation(ids: found_doi, format: "bibtex")
-        if meta_original.length < meta_xref.length
-          res = meta_xref
-        else
-          res = meta_original
-        end
-      rescue => exception
-        res = meta_original     
-      end
+      res = meta_original
     end
 
     res = "@#{res}"
