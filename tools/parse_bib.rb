@@ -11,11 +11,13 @@ module BibParser
   end
 
   def fetch_metadata(entry)
-    puts "ENTRY:\n#{entry}"
     
     lookup = true
 
     entry = entry.gsub("&nbsp;", "")
+    entry = entry.gsub("&nbsp", "")
+
+    puts "ENTRY:\n#{entry}"
 
     res = ""
 

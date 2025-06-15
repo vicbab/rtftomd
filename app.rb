@@ -6,7 +6,7 @@ require 'fileutils'
 load 'tools/parse_bib.rb'
 load 'tools/convert.rb'
 load 'tools/populate_lib.rb'
-load 'tools/populate_stylo.rb'
+#load 'tools/populate_stylo.rb'
 
 def run(options)
     #Populate.initialize()
